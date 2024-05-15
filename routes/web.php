@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 
 
 use App\Http\Controllers\PostController;
-
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,4 +37,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 });
