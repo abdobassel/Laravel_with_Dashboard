@@ -78,19 +78,36 @@ class AuthController extends Controller
     {
 
 
-
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => 'nullable|string|min:6|confirmed',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // قواعد الصورة المسموح بها
+        ]);
         $user =  User::find($request->userid);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        // Check if password field is not empty
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
 
         if ($user) {
-            $user->update([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
-            ]);
+            // تحميل الصورة إذا تم تحميلها
+            if ($request->hasFile('profile_img')) {
+                $profilePicture = $request->file('profile_img');
+                $fileName = time() . '_' . $profilePicture->getClientOriginalName();
+                // اختر المسار المناسب لتخزين الصورة، هنا سنختار مجلد public
+                $filePath = 'uploads/profile_pictures/';
+                $profilePicture->move(public_path($filePath), $fileName);
+                // حفظ اسم الصورة في قاعدة البيانات
+                $user->profile_picture = $filePath . $fileName;
+            }
 
             $user->save();
         }
 
-        return redirect()->route('profile');
+
+        return redirect()->route('profile')->with('success', 'تم تحديث الملف الشخصي بنجاح');
     }
 }
