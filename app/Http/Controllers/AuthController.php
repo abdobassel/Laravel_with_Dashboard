@@ -71,7 +71,15 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
-        return view('auth.profile');
+        // Check if the authenticated user is an admin
+
+
+        if ($request->user()->isAdmin()) {
+            // Redirect to admin profile
+            return view('auth.profile');
+        }
+        // user profile 
+        return   view('auth.user.profile');
     }
 
     public function updateProfile(Request $request)

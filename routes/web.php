@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 
 
 use App\Http\Controllers\PostController;
+use App\Http\Middleware\AdminMiddleware;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
 Route::get('/', function () {
@@ -33,13 +34,15 @@ Route::controller(
     }
 );
 
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
-
+    })->middleware(AdminMiddleware::class)->name('dashboard');
+    // admin profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/{userid}', [AuthController::class, 'updateProfile'])->name('profile.update');
 });

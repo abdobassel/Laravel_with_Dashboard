@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    Profile
+    Admin Profile
 @endsection
 
 @section('content')
