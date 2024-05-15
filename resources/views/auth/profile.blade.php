@@ -15,11 +15,14 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Edit Profile</h4>
+                    @if (auth()->user()->profile_picture)
+                        <div class="text-center">
+                            <img src="{{ asset(auth()->user()->profile_picture) }}" alt="Profile Image" class="img-fluid mb-3"
+                                style="max-width: 200px;">
+                        </div>
+                    @endif
 
-                    <div class="text-center">
-                        <img src="{{ asset(auth()->user()->profile_picture) }}" alt="Profile Image" class="img-fluid mb-3"
-                            style="max-width: 200px;">
-                    </div>
+
                     <form class="forms-sample" enctype="multipart/form-data" id="profile_setup_frm"
                         action="{{ route('profile.update', ['userid' => auth()->user()->id]) }}" method="POST">
 

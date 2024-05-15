@@ -10,15 +10,18 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+//// test posts
 Route::get('/post/create', [PostController::class, 'create']);
 Route::post('/post', [PostController::class, 'store'])->name('store');
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts');
-
+/////
 
 Route::controller(
     AuthController::class
-)->group(
+)->middleware('guest')->group(
     function () {
         Route::get('register', 'register')->name('register');
 
@@ -27,13 +30,12 @@ Route::controller(
         Route::get('login', 'login')->name('login');
 
         Route::post('login', 'loginAction')->name('login.action');
-
-
-        Route::get('logout', 'logout')->middleware('auth')->name('logout');
     }
 );
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
