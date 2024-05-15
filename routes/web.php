@@ -39,4 +39,5 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile/{userid}', [AuthController::class, 'updateProfile'])->name('profile.update');
 });

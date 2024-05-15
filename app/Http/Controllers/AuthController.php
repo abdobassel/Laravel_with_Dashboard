@@ -73,4 +73,24 @@ class AuthController extends Controller
     {
         return view('auth.profile');
     }
+
+    public function updateProfile(Request $request)
+    {
+
+
+
+        $user =  User::find($request->userid);
+
+        if ($user) {
+            $user->update([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
+
+            $user->save();
+        }
+
+        return redirect()->route('profile');
+    }
 }
