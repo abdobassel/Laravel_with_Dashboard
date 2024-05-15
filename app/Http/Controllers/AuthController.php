@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -95,10 +96,18 @@ class AuthController extends Controller
         if ($user) {
             // تحميل الصورة إذا تم تحميلها
             if ($request->hasFile('profile_img')) {
+
+
+                $oldImagePath = auth()->user()->profile_picture;
+                if ($oldImagePath && File::exists(public_path($oldImagePath))) {
+                    File::delete(public_path($oldImagePath));
+                }
+
                 $profilePicture = $request->file('profile_img');
                 $fileName = time() . '_' . $profilePicture->getClientOriginalName();
                 // اختر المسار المناسب لتخزين الصورة، هنا سنختار مجلد public
                 $filePath = 'uploads/profile_pictures/';
+
                 $profilePicture->move(public_path($filePath), $fileName);
                 // حفظ اسم الصورة في قاعدة البيانات
                 $user->profile_picture = $filePath . $fileName;
