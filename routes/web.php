@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\PostController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\ProductController;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
 Route::get('/', function () {
@@ -45,4 +46,7 @@ Route::middleware(['auth'])->group(function () {
     // admin profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/{userid}', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/dashboard/products', [ProductController::class, 'index'])->middleware(AdminMiddleware::class)->name('admin.products');
+    Route::get('/dashboard/product/create', [ProductController::class, 'create'])->middleware(AdminMiddleware::class)->name('admin.product.create');
+    Route::post('/dashboard/products', [ProductController::class, 'store'])->name('admin.product.store');
 });
