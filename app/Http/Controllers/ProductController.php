@@ -113,16 +113,16 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $productid)
     {
-
+        $product = Product::find($productid);
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'desc' => 'nullable|string',
             'category' => 'required|exists:categories,id',
 
-            'userid' => 'required|exists:users,id',
+
             'product_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
 
@@ -130,7 +130,7 @@ class ProductController extends Controller
 
 
         // Update the product data
-        $product = Product::find($request->productid);
+
         $product->name = $validatedData['name'];
         $product->price = $validatedData['price'];
         $product->description = $validatedData['desc'] ?? 'No description provided';
@@ -139,6 +139,10 @@ class ProductController extends Controller
 
         // Check if a new product image was uploaded
         if ($request->hasFile('product_img')) {
+            if ($product->product_picture && file_exists(public_path($product->product_picture))) {
+                unlink(public_path($product->product_picture));
+            }
+
             $productImage = $request->file('product_img');
             $fileName = time() . '_' . $productImage->getClientOriginalName();
             $filePath = 'uploads/product_pictures/';
@@ -150,7 +154,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('admin.product.update')->with('success', 'Product updated successfully!');
+        return back()->with('success', 'Product updated successfully!');
     }
 
     /**

@@ -51,5 +51,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/products', [ProductController::class, 'store'])->name('admin.product.store');
 
     Route::get('/dashboard/products/edit/{productid}', [ProductController::class, 'edit'])->middleware(AdminMiddleware::class)->name('admin.product.edit');
-    Route::post('/dashboard/products/edit/{productid}', [ProductController::class, 'update'])->name('admin.product.update');
+    Route::post('/dashboard/products/edit/{id}', [ProductController::class, 'update'])->name('admin.product.update');
 });

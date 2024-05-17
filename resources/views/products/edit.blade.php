@@ -2,6 +2,15 @@
 @section('title')
     Edit Product
 @endsection
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 @section('content')
     <div class="container-fluid">
@@ -11,7 +20,8 @@
                     <div class="card-body">
                         <h4 class="card-title">Edit Product</h4>
                         <form class="forms-sample" enctype="multipart/form-data"
-                            action="{{ route('admin.product.update', $product->id) }}" method="POST">
+                            action="{{ route('admin.product.update', ['id' => $product->id]) }}" method="post"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="productid" value="{{ $product->id }}">
 
