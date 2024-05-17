@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 
@@ -16,7 +17,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('category')->get();
         return view('products.products', compact('products'));
     }
 
@@ -38,21 +39,47 @@ class ProductController extends Controller
      * @param  \App\Http\Requests\StoreProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'desc' => 'nullable|string',
+            'category' => 'required|exists:categories,id',
 
-        $imagePath = $request->file('product_img')->store('public/product_images/');
-
-        $product = Product::create([
-            'name' => $request->input('name'),
-            'price' => $request->price,
-            'description' => $request->desc,
-            'category_id' => $request->category,
-            'product_picture' => $imagePath,
-            'user_id' => auth()->user()->id,
+            'product_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        if ($request->hasFile('product_img')) {
+            $productImage = $request->file('product_img');
 
-        return redirect()->route('admin.product.create')->with('success', 'Product added successfully!');
+            $fileName = time() . '_' . $productImage->getClientOriginalName();
+            // اختر المسار المناسب لتخزين الصورة، هنا سنختار مجلد public
+            $filePath = 'uploads/product_pictures/';
+
+            $productImage->move(public_path($filePath), $fileName);
+            // حفظ اسم الصورة في قاعدة البيانات
+
+
+
+
+            // طباعة محتويات الطلب للتصحيح
+            //   dd($request->all());
+
+            $productData = [
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'description' => $validatedData['desc'] ?? 'No description provided',
+                'category_id' => $validatedData['category'],
+                'product_picture' => $filePath . $fileName,
+                'user_id' => auth()->user()->id,
+            ];
+
+            Product::create($productData);
+
+            return redirect()->route('admin.products')->with('success', 'Product added successfully!');
+        } else {
+            return back()->withErrors(['product_img' => 'Product image is required.']);
+        }
     }
 
     /**
@@ -72,9 +99,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($productid)
     {
-        //
+        $categories = Category::all();
+        $product = Product::find($productid);
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -84,9 +113,44 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(Request $request)
     {
-        //
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'desc' => 'nullable|string',
+            'category' => 'required|exists:categories,id',
+
+            'userid' => 'required|exists:users,id',
+            'product_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+
+        ]);
+
+
+        // Update the product data
+        $product = Product::find($request->productid);
+        $product->name = $validatedData['name'];
+        $product->price = $validatedData['price'];
+        $product->description = $validatedData['desc'] ?? 'No description provided';
+        $product->category_id = $validatedData['category'];
+        $product->user_id = auth()->user()->id;
+
+        // Check if a new product image was uploaded
+        if ($request->hasFile('product_img')) {
+            $productImage = $request->file('product_img');
+            $fileName = time() . '_' . $productImage->getClientOriginalName();
+            $filePath = 'uploads/product_pictures/';
+            $productImage->move(public_path($filePath), $fileName);
+            $product->product_picture = $filePath . $fileName;
+        }
+
+        // Save the updated product data
+
+        $product->save();
+
+        return redirect()->route('admin.product.update')->with('success', 'Product updated successfully!');
     }
 
     /**

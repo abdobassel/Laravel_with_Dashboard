@@ -23,7 +23,8 @@
                                 <th>Price</th>
                                 <th>Description</th>
                                 <th>Category</th>
-
+                                <th>Image</th>
+                                <th>Actions</th> <!-- Add this header -->
                             </tr>
                         </thead>
                         <tfoot>
@@ -32,7 +33,8 @@
                                 <th>Price</th>
                                 <th>Description</th>
                                 <th>Category</th>
-
+                                <th>Image</th>
+                                <th>Actions</th> <!-- Add this footer -->
                             </tr>
                         </tfoot>
                         <tbody>
@@ -41,8 +43,25 @@
                                     <td>{{ $product->name }}</td>
                                     <td>{{ $product->price }}</td>
                                     <td>{{ $product->description }}</td>
-                                    <td>{{ $product->name }}</td>
-
+                                    <td>{{ $product->category->name }}</td>
+                                    <td>
+                                        <img src="{{ asset($product->product_picture) }}" alt="{{ $product->name }}"
+                                            width="40" height="40">
+                                    </td>
+                                    <td>
+                                        <!-- Edit Button -->
+                                        <a href="{{ route('admin.product.edit', $product->id) }}"
+                                            class="btn btn-sm btn-primary">Edit</a>
+                                        <!-- Delete Button
+                                              
+                                                        -->
+                                        <form action="" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
 

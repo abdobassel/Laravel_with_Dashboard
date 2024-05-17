@@ -9,6 +9,16 @@
             <h1>{{ session('success') }}</h1>
         </div>
     @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="row justify-content-center">
 
         <div class="col-md-6">
@@ -16,8 +26,8 @@
                 <div class="card-body">
                     <h4 class="card-title">Add Product</h4>
 
-                    <form class="forms-sample" enctype="multipart/form-data" id="profile_setup_frm"
-                        action="{{ route('admin.product.store') }}" method="POST">
+                    <form class="forms-sample" enctype="multipart/form-data" action="{{ route('admin.product.store') }}"
+                        method="POST">
                         @csrf
 
 

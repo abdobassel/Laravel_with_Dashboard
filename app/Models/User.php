@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->level === 'Admin';
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

@@ -49,4 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/products', [ProductController::class, 'index'])->middleware(AdminMiddleware::class)->name('admin.products');
     Route::get('/dashboard/product/create', [ProductController::class, 'create'])->middleware(AdminMiddleware::class)->name('admin.product.create');
     Route::post('/dashboard/products', [ProductController::class, 'store'])->name('admin.product.store');
+
+    Route::get('/dashboard/products/edit/{productid}', [ProductController::class, 'edit'])->middleware(AdminMiddleware::class)->name('admin.product.edit');
+    Route::post('/dashboard/products/edit/{productid}', [ProductController::class, 'update'])->name('admin.product.update');
 });
