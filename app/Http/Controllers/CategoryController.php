@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use GuzzleHttp\Psr7\Request;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 
@@ -15,6 +16,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
+
+        return view('products.categories', compact('categories'));
     }
 
     /**
@@ -24,6 +28,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        return view('products.categories.create');
         //
     }
 
@@ -33,9 +38,46 @@ class CategoryController extends Controller
      * @param  \App\Http\Requests\StoreCategoryRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+
+            'desc' => 'nullable|string',
+
+
+            'category_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('category_img')) {
+            $categoryImage = $request->file('category_img');
+
+            $fileName = time() . '_' . $categoryImage->getClientOriginalName();
+            // اختر المسار المناسب لتخزين الصورة، هنا سنختار مجلد public
+            $filePath = 'uploads/category_pictures/';
+
+            $categoryImage->move(public_path($filePath), $fileName);
+            // حفظ اسم الصورة في قاعدة البيانات
+
+
+
+
+            // طباعة محتويات الطلب للتصحيح
+            //   dd($request->all());
+
+            $categoryData = [
+                'name' => $validatedData['name'],
+                'description' => $validatedData['desc'] ?? 'No description provided',
+                'category_picture' => $filePath . $fileName,
+                'user_id' => auth()->user()->id,
+            ];
+
+            Category::create($categoryData);
+
+            return back() > with('success', 'Product added successfully!');
+        } else {
+            return back()->withErrors(['product_img' => 'Product image is required.']);
+        }
     }
 
     /**
@@ -55,9 +97,10 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit($categoryid)
     {
-        //
+        $category = Category::find($categoryid);
+        return view('products.categories.edit', compact('category'));
     }
 
     /**
@@ -78,8 +121,11 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($categoryid)
     {
-        //
+        $category = Category::find($categoryid);
+        $category->delete();
+
+        return back()->with('success', 'Category Deleted successfully!');
     }
 }

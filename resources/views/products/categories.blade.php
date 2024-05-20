@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    Products
+    Categories
 @endsection
 
 @section('content')
@@ -22,9 +22,9 @@
     <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Products</h1>
+        <h1 class="h3 mb-2 text-gray-800">Categories</h1>
         <hr>
-        <a href="{{ route('admin.product.create') }}" class="btn btn-primary">Add Product</a>
+        <a href="{{ route('admin.category.create') }}" class="btn btn-primary">Add Category</a>
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -35,42 +35,37 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Price</th>
+
                                 <th>Description</th>
-                                <th>Category</th>
-                                <th>Image</th>
-                                <th>Actions</th> <!-- Add this header -->
+                                <th>Actions</th>
+
+
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Name</th>
-                                <th>Price</th>
+
                                 <th>Description</th>
-                                <th>Category</th>
-                                <th>Image</th>
+
                                 <th>Actions</th> <!-- Add this footer -->
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach ($products as $product)
+                            @foreach ($categories as $category)
                                 <tr>
-                                    <td>{{ $product->name }}</td>
-                                    <td>{{ $product->price }}</td>
-                                    <td>{{ $product->description }}</td>
-                                    <td>{{ $product->category->name }}</td>
-                                    <td>
-                                        <img src="{{ asset($product->product_picture) }}" alt="{{ $product->name }}"
-                                            width="40" height="40">
-                                    </td>
+                                    <td>{{ $category->name }}</td>
+
+                                    <td>{{ $category->description }}</td>
+
+
                                     <td>
                                         <!-- Edit Button -->
-                                        <a href="{{ route('admin.product.edit', $product->id) }}"
+                                        <a href="{{ route('admin.category.edit', $category->id) }}"
                                             class="btn btn-sm btn-primary">Edit</a>
-                                        <!-- Delete Button
-                                                                  
-                                                                            -->
-                                        <form action="{{ route('admin.product.destroy', ['id' => $product->id]) }}"
+                                        <a href="#" class="btn btn-sm btn-primary">Show </a>
+                                        <!-- Delete Button -->
+                                        <form action="{{ route('admin.category.destroy', ['id' => $category->id]) }}"
                                             method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')

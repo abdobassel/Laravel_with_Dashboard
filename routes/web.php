@@ -2,11 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
-
 use App\Http\Controllers\PostController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
 Route::get('/', function () {
@@ -52,4 +51,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard/products/edit/{productid}', [ProductController::class, 'edit'])->middleware(AdminMiddleware::class)->name('admin.product.edit');
     Route::post('/dashboard/products/edit/{id}', [ProductController::class, 'update'])->name('admin.product.update');
+    Route::delete('/dashboard/products/delete/{id}', [ProductController::class, 'destroy'])->name('admin.product.destroy');
+
+
+    // admin categories
+    Route::get('/dashboard/categories', [CategoryController::class, 'index'])->middleware(AdminMiddleware::class)->name('admin.categories');
+    Route::get('/dashboard/category/create', [CategoryController::class, 'create'])->middleware(AdminMiddleware::class)->name('admin.category.create');
+    Route::post('/dashboard/category/create', [CategoryController::class, 'store'])->name('admin.category.store');
+    Route::get('/dashboard/categories/edit/{categoryid}', [CategoryController::class, 'edit'])->middleware(AdminMiddleware::class)->name('admin.category.edit');
+    Route::delete('/dashboard/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
 });
