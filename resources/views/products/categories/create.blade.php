@@ -46,7 +46,8 @@
 
                         <div class="form-group">
                             <label for="exampleFormControlFile1">Category Picture</label>
-                            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="cat_img">
+                            <input type="file" class="form-control-file" id="exampleFormControlFile1"
+                                name="category_img">
                         </div>
 
                         <button type="submit" class="btn btn-primary mr-2">Add</button>

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use GuzzleHttp\Psr7\Request;
-use App\Http\Requests\StoreCategoryRequest;
+use Illuminate\Http\Request;
 use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
@@ -32,12 +31,7 @@ class CategoryController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCategoryRequest  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -59,12 +53,6 @@ class CategoryController extends Controller
             $categoryImage->move(public_path($filePath), $fileName);
             // حفظ اسم الصورة في قاعدة البيانات
 
-
-
-
-            // طباعة محتويات الطلب للتصحيح
-            //   dd($request->all());
-
             $categoryData = [
                 'name' => $validatedData['name'],
                 'description' => $validatedData['desc'] ?? 'No description provided',
@@ -74,9 +62,9 @@ class CategoryController extends Controller
 
             Category::create($categoryData);
 
-            return back() > with('success', 'Product added successfully!');
+            return back()->with('success', 'Category added successfully!');
         } else {
-            return back()->withErrors(['product_img' => 'Product image is required.']);
+            return back()->withErrors(['category_img' => 'category image is required.']);
         }
     }
 
