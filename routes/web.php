@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
 Route::get('/', function () {
@@ -60,4 +61,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/category/create', [CategoryController::class, 'store'])->name('admin.category.store');
     Route::get('/dashboard/categories/edit/{categoryid}', [CategoryController::class, 'edit'])->middleware(AdminMiddleware::class)->name('admin.category.edit');
     Route::delete('/dashboard/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
+
+    //  users dashboard
+    Route::get('/dashboard/users', [DashboardController::class, 'getUsers'])->middleware(AdminMiddleware::class)->name('admin.users');
+    Route::get('/dashboard/admins', [DashboardController::class, 'getAdmins'])->middleware(AdminMiddleware::class)->name('admin.admins');
 });

@@ -73,8 +73,8 @@
               <div class="bg-white py-2 collapse-inner rounded">
                   <h6 class="collapse-header">Admins Operations:</h6>
 
-                  <a class="collapse-item" href="utilities-border.html">Admins List</a>
-                  <a class="collapse-item" href="utilities-animation.html">Add Admin</a>
+                  <a class="collapse-item" href="{{ route('admin.admins') }}">Admins List</a>
+                  <a class="collapse-item" href="#">Add Admin</a>
               </div>
           </div>
       </li>
@@ -96,8 +96,8 @@
           </a>
           <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
-                  <h6 class="collapse-header">Login Screens:</h6>
-                  <a class="collapse-item" href="l{{ route('login') }}">New Users</a>
+
+                  <a class="collapse-item" href="{{ route('admin.users') }}">Users Table</a>
                   <a class="collapse-item" href="{{ route('register') }}">Blocked Users</a>
 
                   <div class="collapse-divider"></div>
